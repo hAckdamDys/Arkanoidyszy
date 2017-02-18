@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_arkanoidyszy" default="compile.module.arkanoidyszy">
+  <dirname property="module.arkanoidyszy.basedir" file="${ant.file.module_arkanoidyszy}"/>
+  
+  <property name="module.jdk.home.arkanoidyszy" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.arkanoidyszy" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.arkanoidyszy" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.arkanoidyszy" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="arkanoidyszy.output.dir" value="${module.arkanoidyszy.basedir}/out/production/Arkanoidyszy"/>
+  <property name="arkanoidyszy.testoutput.dir" value="${module.arkanoidyszy.basedir}/out/test/Arkanoidyszy"/>
+  
+  <path id="arkanoidyszy.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="arkanoidyszy.module.production.classpath">
+    <path refid="${module.jdk.classpath.arkanoidyszy}"/>
+  </path>
+  
+  <path id="arkanoidyszy.runtime.production.module.classpath">
+    <pathelement location="${arkanoidyszy.output.dir}"/>
+  </path>
+  
+  <path id="arkanoidyszy.module.classpath">
+    <path refid="${module.jdk.classpath.arkanoidyszy}"/>
+    <pathelement location="${arkanoidyszy.output.dir}"/>
+  </path>
+  
+  <path id="arkanoidyszy.runtime.module.classpath">
+    <pathelement location="${arkanoidyszy.testoutput.dir}"/>
+    <pathelement location="${arkanoidyszy.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.arkanoidyszy">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.arkanoidyszy">
+    <patternset refid="excluded.from.module.arkanoidyszy"/>
+  </patternset>
+  
+  <path id="arkanoidyszy.module.sourcepath">
+    <dirset dir="${module.arkanoidyszy.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.arkanoidyszy" depends="compile.module.arkanoidyszy.production,compile.module.arkanoidyszy.tests" description="Compile module Arkanoidyszy"/>
+  
+  <target name="compile.module.arkanoidyszy.production" depends="register.custom.compilers" description="Compile module Arkanoidyszy; production classes">
+    <mkdir dir="${arkanoidyszy.output.dir}"/>
+    <javac2 destdir="${arkanoidyszy.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.arkanoidyszy}/javac">
+      <compilerarg line="${compiler.args.arkanoidyszy}"/>
+      <bootclasspath refid="arkanoidyszy.module.bootclasspath"/>
+      <classpath refid="arkanoidyszy.module.production.classpath"/>
+      <src refid="arkanoidyszy.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.arkanoidyszy"/>
+    </javac2>
+    
+    <copy todir="${arkanoidyszy.output.dir}">
+      <fileset dir="${module.arkanoidyszy.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.arkanoidyszy.tests" depends="register.custom.compilers,compile.module.arkanoidyszy.production" description="compile module Arkanoidyszy; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.arkanoidyszy" description="cleanup module">
+    <delete dir="${arkanoidyszy.output.dir}"/>
+    <delete dir="${arkanoidyszy.testoutput.dir}"/>
+  </target>
+</project>

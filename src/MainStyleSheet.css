@@ -1,0 +1,78 @@
+.menuMainText{
+    -fx-font-size: 31pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: yellow;
+}
+.menuButtons{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: yellow;
+    -fx-background-color: black;
+}
+.menuButtons:hover{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: black;
+    -fx-background-color: red;
+}
+.menuBackground{
+    -fx-background-color: linear-gradient(blue, white);
+}
+.gameBackground{
+    -fx-background-color: linear-gradient(#dc9656, #ab4642);
+}
+.sideStyle{
+    -fx-font-size: 12pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: black;
+    -fx-background: yellow;
+}
+.ballStyle{
+    //przezroczystosc -fx-opacity: 0.5;
+    -fx-fill: linear-gradient(#fab4ff, #fafff0);
+    -fx-rotate: 7;
+    -fx-stroke: black;
+}
+.padleStyle{
+    -fx-fill: linear-gradient(red,black);
+}
+.gameOverBackground{
+    -fx-background-color: black;
+}
+.gameOverText{
+    -fx-font-size: 31pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: red;
+}
+.gameOverButtons{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: red;
+    -fx-background-color: grey;
+}
+.gameOverButtons:hover{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: orange;
+    -fx-background-color: white;
+}
+.levelSelectBackground{
+    -fx-background-color: white;
+}
+.levelSelectText{
+    -fx-font-size: 31pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: blue;
+}
+.levelSelectButtons{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: blue;
+    -fx-background-color: grey;
+}
+.levelSelectButtons:hover{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Papyrus";
+    -fx-text-fill: green;
+    -fx-background-color: black;
+}

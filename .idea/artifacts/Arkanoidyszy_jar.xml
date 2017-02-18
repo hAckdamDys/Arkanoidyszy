@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Arkanoidyszy:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Arkanoidyszy_jar</output-path>
+    <root id="archive" name="Arkanoidyszy.jar">
+      <element id="module-output" name="Arkanoidyszy" />
+    </root>
+  </artifact>
+</component>
