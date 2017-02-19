@@ -24,15 +24,7 @@ public class Game {
     private final double appWidth;
     private final double appHeight;
 
-    public UserAction getAction() {
-        return action;
-    }
-
     private UserAction action;
-
-    public void setAction(UserAction a){
-        action=a;
-    }
 
     private Timeline timeline;
     private boolean isPlaying;
@@ -40,6 +32,7 @@ public class Game {
     private BrickGrid grid;
 
     private Ball ballA;
+    private Ball ballB;
     private Padle padle;
 
     private int lifes;
@@ -52,6 +45,13 @@ public class Game {
         this.lifeLabel=lifeLabel;
     }
 
+    public void setAction(UserAction a){
+        action=a;
+    }
+    public UserAction getAction() {
+        return action;
+    }
+
     //private IntegerProperty intBallXProperty,intBallYProperty; to byly zmienne ktore trzmaly wspolrzedne pilki
 
     public Game(int appWidth, int appHeight, double ballRadius, double RectHeight, double RectWidth, BrickGrid grid) {
@@ -59,7 +59,11 @@ public class Game {
         this.grid = grid;
         this.appWidth = appWidth;
         this.appHeight = appHeight;
-        this.ballA = new Ball(ballRadius,RectWidth,RectHeight,appWidth,appHeight,grid);
+        //padle init:
+        this.padle = new Padle(RectWidth,RectHeight,appWidth,appHeight,5);
+        //ball init:
+        this.ballA = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
+        this.ballB = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
         //property na wspolrzedne pilki
         //intBallXProperty = new SimpleIntegerProperty();
         //intBallYProperty = new SimpleIntegerProperty();
@@ -69,9 +73,6 @@ public class Game {
         ballA.getCircle().translateXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
         //intBallYProperty.bind(ballA.getCircle().translateYProperty());
         ballA.getCircle().translateYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
-
-        //padle init:
-        this.padle = new Padle(RectWidth,RectHeight,appWidth,appHeight,5);
         this.isPlaying=false;
         timeline=new Timeline();
         action=UserAction.NONE;
@@ -88,9 +89,9 @@ public class Game {
             //akcja to to co wykonuje w tym momencie gracz czyli np poruszenie w lewo
             padle.move(action);
             //poruszenie pilką i co zrobic gdy spadnie, dostaje tez akcje
-            if(ballA.move(padle.getX(),action)){
+            ballB.move(action);
+            if(ballA.move(action)){
                 this.loseLife();
-                //this.restartGame();//loselife tutaj powinno byc ktore po skonczeniu life wywala gameover i konczy dana gre
             }
             //update info o pilce
             /* albo tutaj mozna dac wypisywanie za kazdym razem albo lepiej podlaczyc sie do properties przy inicjalizacji
@@ -108,21 +109,21 @@ public class Game {
         layout.setMaxWidth(appWidth);
         //dodajemy do layouta najpierw bloczki przez grid
         grid.showBricks(layout.getChildren(),scoreLabel);
-        layout.getChildren().addAll(ballA.getCircle(),padle.getRect());
+        layout.getChildren().addAll(ballB.getCircle(),ballA.getCircle(),padle.getRect());
         layout.setOnMouseClicked(e->layout.requestFocus());//sprawdzamy
         layout.getStyleClass().add("gameBackground");
         return layout;
     }
 
-    public void restartGame(){
-        stopGame();
-        startGame();
-    }
+//    public void restartGame(){
+//        stopGame();
+//        startGame();
+//    }
 
-    public void stopGame(){
-        isPlaying=false;
-        timeline.stop();
-    }
+//    public void stopGame(){
+//        isPlaying=false;
+//        timeline.stop();
+//    }
 
     public void loseGame(){
         isPlaying=false;
@@ -137,7 +138,8 @@ public class Game {
         }
         --lifes;
         lifeLabel.setText(String.valueOf(lifes));
-        ballA.start();
+        ballA.start(appWidth/2,appHeight-75);
+        ballB.start(appWidth/2+20,appHeight-75);
         padle.start();
     }
 
@@ -145,7 +147,8 @@ public class Game {
     public void startGame(){
         //ustawienie ball i Rect na default
         lifes=3;
-        ballA.start();
+        ballA.start(appWidth/2,appHeight-75);
+        ballB.start(appWidth/2+20,appHeight-75);
         padle.start();
         grid.restart();
         timeline.play();
@@ -154,10 +157,10 @@ public class Game {
 
     public void setBallRadius(double radius){
         ballA.setRadius(radius);
+        ballB.setRadius(radius);
     }
     public void setRectWidth(double width){
         padle.setRectWidth(width);
-        ballA.setPadleWidth(width);
     }
     public void setPadleSpeed(double padleSpeed) {
         padle.setSpeed(padleSpeed);

@@ -5,77 +5,68 @@ import javafx.scene.effect.Light;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-//po prostu circle z predkascia i wielkoscia
+
 public class Ball {
     //wielkosc roznic zaleznych od tego w ktora strone padlem jezdzimy podczas uderzenia
     private static final double ballPadleDiffer=0.7;
+    private static final int ileP = 10;//liczba czesci okregu ktore posiada kazda czesc
+    private Padle padle;
+    private Circle circle;
+    private double dx,dy;//dy to szybkosc z jaka uzytkownik reagowac musi a dx prawo lewo
+    private boolean circleLeft,circleUp;
+    private int appWidth,appHeight;
+    //podzial okregu na 4 czesci ktore przy resecie pilki resetujemy i przy ruchu pilki ruszamy
+    private Point2D[][] allSides;
+    private BrickGrid grid;
+    private int waitinger;//ilsoc clocków po których znowu moze uderzyc klocek i sie odbic
 
-    private double batHeight;
-
-    public void setPadleWidth(double batWidth) {
-        this.batWidth = batWidth;
+    public void setPadle(Padle padle) {
+        this.padle = padle;
     }
-
-    private double batWidth;
 
     public void setRadius(double radius) {
         this.circle.setRadius(radius);
+        double tmpX = circle.getTranslateX();
+        double tmpY = circle.getTranslateY();
+        double dP = Math.PI/(2*(ileP-1));//o tyle bedziemy zwiekszac kąt ileP - 1 bo chcemy od -45 stopni do 45 włącznie
+        double thetas[] = new double[4];
+        thetas[0] = Math.PI*45/180;//poczatkowy kąt dla górnej części analogicznie dalej
+        thetas[1] = Math.PI*135/180;
+        thetas[2] = Math.PI*225/180;
+        thetas[3] = Math.PI*315/180;
+        for(int i=0;i<ileP;i++){
+            for(int j=0;j<4;j++){
+                allSides[j][i]=new Point2D(tmpX+radius*Math.cos(thetas[j]),tmpY+radius*Math.sin(thetas[j]));
+                thetas[j]+=dP;
+            }
+        }
     }
 
     public Circle getCircle() {
         return circle;
     }
 
-    private Circle circle;
-    private double dx,dy;//dy to szybkosc z jaka uzytkownik reagowac musi a dx prawo lewo
-    private boolean circleLeft,circleUp;
-    private int appWidth,appHeight;
-    //podzial okregu na czesci ktore przy resecie pilki resetujemy i przy ruchu pilki ruszamy
-    private static final int ileP = 10;//liczba czesci okregu ktore posiada kazda czesc
-    private Point2D[] topSide;
-    private Point2D[] lefSide;
-    private Point2D[] rigSide;
-    private Point2D[] botSide;
-    private BrickGrid grid;
-    private int waitinger;//ilsoc clocków po których znowu moze uderzyc klocek i sie odbic
-    public Ball(double radius, double batWidth, double batHeight, int appWidth, int appHeight, BrickGrid grid){
-        this.batWidth = batWidth;
-        this.batHeight = batHeight;
+    public Ball(double radius, Padle padle, int appWidth, int appHeight, BrickGrid grid){
+        setPadle(padle);
         this.appHeight=appHeight;
         this.appWidth=appWidth;
         this.circle = new Circle(radius);
         circle.getStyleClass().add("ballStyle");
-        topSide= new Point2D[ileP];
-        lefSide= new Point2D[ileP];
-        rigSide= new Point2D[ileP];
-        botSide= new Point2D[ileP];
-        //ogarnac grid
+        allSides= new Point2D[4][ileP];
+        for(int j=0;j<4;j++){
+            allSides[j]=new Point2D[ileP];
+        }
         this.grid=grid;
     }
-    public void start(){
-        double tmpX = appWidth/2;
+    public void start(double tmpX, double tmpY){
         circle.setTranslateX(tmpX);
-        double tmpY = appHeight-75;
         circle.setTranslateY(tmpY);
-        double radi = this.circle.getRadius();
-        double topThet = Math.PI*45/180;//poczatkowy kąt dla górnej części analogicznie dalej
-        double lefThet = Math.PI*135/180;
-        double botThet = Math.PI*225/180;
-        double rigThet = Math.PI*315/180;
-        double dP = Math.PI/(2*(ileP-1));//o tyle bedziemy zwiekszac kąt ileP - 1 bo chcemy od -45 stopni do 45 włącznie
-        for(int i=0;i<ileP;i++){
-            topSide[i]=new Point2D(tmpX+radi*Math.cos(topThet),tmpY+radi*Math.sin(topThet));
-            lefSide[i]=new Point2D(tmpX+radi*Math.cos(lefThet),tmpY+radi*Math.sin(lefThet));
-            botSide[i]=new Point2D(tmpX+radi*Math.cos(botThet),tmpY+radi*Math.sin(botThet));
-            rigSide[i]=new Point2D(tmpX+radi*Math.cos(rigThet),tmpY+radi*Math.sin(rigThet));
-            //zwiekszenie kątów
-            topThet+=dP; lefThet+=dP; botThet+=dP; rigThet+=dP;
-        }
+        this.setRadius(this.circle.getRadius());
         circleUp=true; circleLeft=true;
         dx=5*ballPadleDiffer; dy=5*ballPadleDiffer;
         waitinger=0;
     }
-    public boolean move(double batx, UserAction action){
+    public boolean move(UserAction action){
         //zapamietujemy sobie zmienne x,y pilki i jej r
         double circlex=circle.getTranslateX();
         double circley=circle.getTranslateY();
@@ -88,76 +79,45 @@ public class Ball {
         circle.setTranslateX(circlex + rdx);
         circle.setTranslateY(circley + rdy);
         for (int i = 0; i < ileP; i++) {
-            topSide[i]=topSide[i].add(rdx,rdy);
-            lefSide[i]=lefSide[i].add(rdx,rdy);
-            botSide[i]=botSide[i].add(rdx,rdy);
-            rigSide[i]=rigSide[i].add(rdx,rdy);
+            for(int j=0;j<4;j++) {
+                allSides[j][i]=allSides[j][i].add(rdx,rdy);
+            }
         }
         if(waitinger<=0) {
-            int topCount = 0;
-            int lefCount = 0;
-            int botCount = 0;
-            int rigCount = 0;
+            int allCounts[] = new int[4];
             boolean tookHit = false;
             for (int i = 0; i < ileP; i++) {
-                int rdxi = (int)topSide[i].getX();
-                int rdyi = (int)topSide[i].getY();
-                if(rdxi > 0 && rdyi > 0 && rdxi < appWidth && rdyi < appHeight){
-                    if (grid.checkBrick(rdxi,rdyi)) {
-                        ++topCount;
-                        if(!tookHit){
-                            grid.takeHit(rdxi,rdyi);
-                            tookHit=true;
-                        }
-                    }
-                }
-                rdxi = (int)lefSide[i].getX();
-                rdyi = (int)lefSide[i].getY();
-                if (rdxi > 0 && rdyi > 0 && rdxi < appWidth && rdyi < appHeight){
-                    if (grid.checkBrick(rdxi,rdyi)) {
-                        ++lefCount;
-                        if(!tookHit){
-                            grid.takeHit(rdxi,rdyi);
-                            tookHit=true;
-                        }
-                    }
-                }
-                rdxi = (int)botSide[i].getX();
-                rdyi = (int)botSide[i].getY();
-                if (rdxi > 0 && rdyi > 0 && rdxi < appWidth && rdyi < appHeight) {
-                    if (grid.checkBrick(rdxi,rdyi)) {
-                        ++botCount;
-                        if(!tookHit){
-                            grid.takeHit(rdxi,rdyi);
-                            tookHit=true;
-                        }
-                    }
-                }
-                rdxi = (int)rigSide[i].getX();
-                rdyi = (int)rigSide[i].getY();
-                if (rdxi > 0 && rdyi > 0 && rdxi < appWidth && rdyi < appHeight) {
-                    if (grid.checkBrick(rdxi,rdyi)) {
-                        ++rigCount;
-                        if(!tookHit){
-                            grid.takeHit(rdxi,rdyi);
-                            tookHit=true;
+                for (int j=0;j<4;j++) {
+                    int rdxi = (int) allSides[j][i].getX();
+                    int rdyi = (int) allSides[j][i].getY();
+                    if (rdxi > 0 && rdyi > 0 && rdxi < appWidth && rdyi < appHeight) {
+                        if (grid.checkBrick(rdxi, rdyi)) {
+                            ++allCounts[j];
+                            if (!tookHit) {
+                                grid.takeHit(rdxi, rdyi);
+                                tookHit = true;
+                            }
                         }
                     }
                 }
             }
-            if (topCount != 0 || lefCount!=0 || rigCount!=0 || botCount!=0) {//jesli dotyka jakiegos bloczka
-                double tmpDx;
+            if (tookHit) {//jesli dotyka jakiegos bloczka
+                //double tmpDx; <- use this if there is change on corner hits
                 //4 przypadki zalezne od jak leci:
                 //jesli leci w prawo:
+                int topCount=allCounts[0];
+                int lefCount=allCounts[1];
+                int botCount=allCounts[2];
+                int rigCount=allCounts[3];
                 if (!circleLeft) {
                     if (circleUp) {//prawo góra
                         if (botCount > topCount) {
                             circleUp = false;
                             if (rigCount > lefCount) {
                                 circleLeft = true;
-                                tmpDx = dx;
-                                dx = dy;
-                                dy = tmpDx;
+//                                tmpDx = dx;
+//                                dx = dy;
+//                                dy = tmpDx;
                             }
                         } else if (rigCount > lefCount) {
                             circleLeft = true;
@@ -168,9 +128,9 @@ public class Ball {
                             circleUp = true;
                             if (rigCount > lefCount) {
                                 circleLeft = true;
-                                tmpDx = dx;
-                                dx = dy;
-                                dy = tmpDx;
+//                                tmpDx = dx;
+//                                dx = dy;
+//                                dy = tmpDx;
                             }
                         } else if (rigCount > lefCount) {
                             circleLeft = true;
@@ -183,9 +143,9 @@ public class Ball {
                             circleUp = false;
                             if (rigCount < lefCount) {
                                 circleLeft = false;
-                                tmpDx = dx;
-                                dx = dy;
-                                dy = tmpDx;
+//                                tmpDx = dx;
+//                                dx = dy;
+//                                dy = tmpDx;
                             }
                         } else if (rigCount < lefCount) {
                             circleLeft = false;
@@ -196,9 +156,9 @@ public class Ball {
                             circleUp = true;
                             if (rigCount < lefCount) {
                                 circleLeft = false;
-                                tmpDx = dx;
-                                dx = dy;
-                                dy = tmpDx;
+//                                tmpDx = dx;
+//                                dx = dy;
+//                                dy = tmpDx;
                             }
                         } else if (rigCount < lefCount) {
                             circleLeft = false;
@@ -222,7 +182,7 @@ public class Ball {
         if(circley - radius <= 0){
             circleUp=false;
         }
-        else if((circley + radius >= appHeight - batHeight) && (circlex + radius >= batx) && (circlex-radius<=batx+batWidth)){
+        else if((circley + radius >= appHeight - padle.getHeight()) && (circlex + radius >= padle.getX()) && (circlex-radius<=padle.getX()+padle.getWidth())){
             //jestesmy tutaj jesli pilka jest ponizej
             circleUp=true;
             if(action==UserAction.LEFT){
@@ -253,7 +213,6 @@ public class Ball {
         }
         //40 to jest odleglosc padla od ziemi stad 40 musi byc nizej
         if(circley + radius >= appHeight-40){
-            this.start();
             return true;
         }
         return false;

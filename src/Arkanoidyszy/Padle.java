@@ -3,30 +3,36 @@ package Arkanoidyszy;
 import javafx.scene.shape.Rectangle;
 
 public class Padle {
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     private double speed;
     private Rectangle rect;
+    private double rectHeight;
+    private double rectWidth;
+    private final int appWidth;
+    private final int appHeight;
+
+    public double getWidth(){
+        return rectWidth;
+    }
+    public double getHeight(){
+        return rectHeight;
+    }
 
     public Rectangle getRect() {
         return rect;
     }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     public double getX(){
         return rect.getTranslateX();
     }
-    private double rectHeight;
 
     public void setRectWidth(double rectWidth) {
         this.rectWidth = rectWidth;
         this.rect.setWidth(rectWidth);
     }
-
-    private double rectWidth;
-    private final int appWidth;
-    private final int appHeight;
     public Padle(double rectWidth, double rectHeight, int appWidth, int appHeight, double speed) {
         this.appHeight=appHeight;
         this.appWidth=appWidth;
