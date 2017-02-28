@@ -19,22 +19,20 @@ import javafx.util.Duration;
  */
 public class Game {
 
-    private KeyFrame frame;
+    private static final int ballMax=9;
 
     private final double appWidth;
     private final double appHeight;
 
     private UserAction action;
-
     private Timeline timeline;
     private boolean isPlaying;
 
     private BrickGrid grid;
 
-    private Ball ballA;
-    private Ball ballB;
+    private Ball[] balls;
     private Padle padle;
-
+    private Powerups powerups;
     private int lifes;
 
     private Label ballXLabel,ballYLabel,lifeLabel,scoreLabel;
@@ -62,17 +60,23 @@ public class Game {
         //padle init:
         this.padle = new Padle(RectWidth,RectHeight,appWidth,appHeight,5);
         //ball init:
-        this.ballA = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
-        this.ballB = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
+        this.balls = new Ball[ballMax];
+        for (int i = 0; i < ballMax; i++) {
+            balls[i] = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
+        }
         //property na wspolrzedne pilki
         //intBallXProperty = new SimpleIntegerProperty();
         //intBallYProperty = new SimpleIntegerProperty();
         //odpalenie listenerow na labele w mainie
         //zeby zoptymalizowac mozna zrobic double properites ktore sa zbindowane do tych od circla
         //intBallXProperty.bind(ballA.getCircle().translateXProperty());
-        ballA.getCircle().translateXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
+        balls[0].getCircle().translateXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
         //intBallYProperty.bind(ballA.getCircle().translateYProperty());
-        ballA.getCircle().translateYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
+        balls[0].getCircle().translateYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
+        //powerups init:
+        this.powerups=new Powerups(balls,padle);
+        this.grid.setPowerups(powerups);
+        //others init:
         this.isPlaying=false;
         timeline=new Timeline();
         action=UserAction.NONE;
@@ -81,18 +85,24 @@ public class Game {
     public Parent screen(){
         Pane layout = new Pane();
         //keyframe dziala tak ze co dany odstep czasu czyli np u mnie 0.016 sekund robi
-        frame = new KeyFrame(Duration.seconds(0.016),e -> {
+        KeyFrame frame = new KeyFrame(Duration.seconds(0.016), e -> {
             //jesli isPlaying false to nic nie robimy
-            if(!isPlaying){
+            if (!isPlaying) {
                 return;
             }
             //akcja to to co wykonuje w tym momencie gracz czyli np poruszenie w lewo
             padle.move(action);
             //poruszenie pilką i co zrobic gdy spadnie, dostaje tez akcje
-            ballB.move(action);
-            if(ballA.move(action)){
+            boolean allLost = true;
+            for (Ball ball : balls) {
+                if (!ball.move(action)) {
+                    allLost = false;
+                }
+            }
+            if (allLost) {
                 this.loseLife();
             }
+            powerups.fall();
             //update info o pilce
             /* albo tutaj mozna dac wypisywanie za kazdym razem albo lepiej podlaczyc sie do properties przy inicjalizacji
             ballXLabel.setText(String.valueOf(ballA.getCircle().getTranslateX()));
@@ -109,7 +119,11 @@ public class Game {
         layout.setMaxWidth(appWidth);
         //dodajemy do layouta najpierw bloczki przez grid
         grid.showBricks(layout.getChildren(),scoreLabel);
-        layout.getChildren().addAll(ballB.getCircle(),ballA.getCircle(),padle.getRect());
+        layout.getChildren().addAll(padle.getRect());
+        for (Ball ball:balls) {
+            layout.getChildren().add(ball.getCircle());
+        }
+        powerups.addChildren(layout.getChildren());
         layout.setOnMouseClicked(e->layout.requestFocus());//sprawdzamy
         layout.getStyleClass().add("gameBackground");
         return layout;
@@ -138,8 +152,8 @@ public class Game {
         }
         --lifes;
         lifeLabel.setText(String.valueOf(lifes));
-        ballA.start(appWidth/2,appHeight-75);
-        ballB.start(appWidth/2+20,appHeight-75);
+        balls[0].start(appWidth/2,appHeight-75);
+//        ball.start(appWidth/2+20,appHeight-75);
         padle.start();
     }
 
@@ -147,8 +161,7 @@ public class Game {
     public void startGame(){
         //ustawienie ball i Rect na default
         lifes=3;
-        ballA.start(appWidth/2,appHeight-75);
-        ballB.start(appWidth/2+20,appHeight-75);
+        balls[0].start(appWidth/2,appHeight-75);
         padle.start();
         grid.restart();
         timeline.play();
@@ -156,8 +169,9 @@ public class Game {
     }
 
     public void setBallRadius(double radius){
-        ballA.setRadius(radius);
-        ballB.setRadius(radius);
+        for (Ball ball:balls){
+            ball.setRadius(radius);
+        }
     }
     public void setRectWidth(double width){
         padle.setRectWidth(width);

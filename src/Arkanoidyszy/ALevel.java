@@ -106,9 +106,7 @@ public class ALevel {
         ballCoordXY.setPadding(new Insets(10,10,10,10));
         //przycisk nowej gry:
         Button button1 = new Button("Leave");
-        button1.setOnAction(e->{
-            game.loseGame();
-        });
+        button1.setOnAction(e-> game.loseGame());
         button1.setPadding(new Insets(10,10,10,10));
 
         HBox hboxTop = new HBox(button1,padleStuffBall,padleStuffPadle,padleSpeed,ballCoordXY);
@@ -126,16 +124,14 @@ public class ALevel {
     private boolean isGoodDouble (String value){
         try{
             double value1 = Double.parseDouble(value);
-            if(value1<1){
-                return false;
-            }
-            return true;
+            return !(value1 < 1);
         }
         catch(NumberFormatException e){
             return false;
         }
     }
-    protected void makeGrid(){};
+    protected void makeGrid(){}
+
     protected void initALevel(Stage window){
         this.window = window;
         makeGrid();
@@ -168,12 +164,12 @@ public class ALevel {
         });
         levelScene.setOnKeyReleased(e->{
             switch (e.getCode()){
-                case A:
+                case A://TODO left arrow
                     if(game.getAction()==UserAction.LEFT) {
                         game.setAction(UserAction.NONE);
                     }
                     break;
-                case D:
+                case D://TODO right arrow
                     if(game.getAction()==UserAction.RIGHT) {
                         game.setAction(UserAction.NONE);
                     }

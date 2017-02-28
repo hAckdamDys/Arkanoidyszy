@@ -10,6 +10,10 @@ public class Padle {
     private final int appWidth;
     private final int appHeight;
 
+    public int getAppHeight() {
+        return appHeight;
+    }
+
     public double getWidth(){
         return rectWidth;
     }

@@ -19,6 +19,11 @@ public class Ball {
     private Point2D[][] allSides;
     private BrickGrid grid;
     private int waitinger;//ilsoc clocków po których znowu moze uderzyc klocek i sie odbic
+    private boolean isAlive;
+
+    public boolean isAlive() {
+        return isAlive;
+    }
 
     public void setPadle(Padle padle) {
         this.padle = padle;
@@ -63,11 +68,15 @@ public class Ball {
         circle.setTranslateY(tmpY);
         this.setRadius(this.circle.getRadius());
         circleUp=true; circleLeft=true;
+        isAlive=true;
         dx=5*ballPadleDiffer; dy=5*ballPadleDiffer;
         waitinger=0;
     }
     public boolean move(UserAction action){
         //zapamietujemy sobie zmienne x,y pilki i jej r
+        if(!isAlive){
+            return true;
+        }
         double circlex=circle.getTranslateX();
         double circley=circle.getTranslateY();
         double radius = circle.getRadius();
@@ -213,6 +222,9 @@ public class Ball {
         }
         //40 to jest odleglosc padla od ziemi stad 40 musi byc nizej
         if(circley + radius >= appHeight-40){
+            isAlive=false;
+            this.circle.setTranslateX(-1);
+            this.circle.setTranslateY(-1);
             return true;
         }
         return false;

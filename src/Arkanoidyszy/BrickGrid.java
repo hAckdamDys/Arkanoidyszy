@@ -86,4 +86,11 @@ public class BrickGrid {
             brickField.remove(bricks[brickId].getRect());
         }
     }
+    public void setPowerups(Powerups powerups){
+        for (Brick brick:bricks) {
+            if(brick.getKind()==BrickKind.POWERUP){
+                brick.setPowerups(powerups);
+            }
+        }
+    }
 }

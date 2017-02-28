@@ -12,6 +12,16 @@ public class Brick {
     private final int hpStart;
     private int score;
     private Image myImage;
+    private Powerups powerups;
+
+    public BrickKind getKind() {
+        return kind;
+    }
+
+    public void setPowerups(Powerups powerups) {
+        this.powerups = powerups;
+    }
+
     public void restartBrick(){
         this.hp=hpStart;
         if(kind==BrickKind.BASIC) {
@@ -22,21 +32,21 @@ public class Brick {
     }
     public Brick(BrickKind kind,int x,int y,int hp,int score){
         this.rect=new Rectangle(x,y,BRICKSIZEWIDTH,BRICKSIZEHEIGHT);
-        this.hp=hp;
         hpStart=hp;
         this.score=score;
         this.kind=kind;
-        if(kind==BrickKind.BASIC) {
-            chooseImage(hp);
-        }
-        else if(kind==BrickKind.METAL) {myImage = new Image("sadbrick.png"); rect.setFill(new ImagePattern(myImage));}
-        else if(kind==BrickKind.POWERUP) {myImage = new Image("happybrick.png"); rect.setFill(new ImagePattern(myImage));}
+        restartBrick();
     }
     public int takeHit(){
         if(kind!=BrickKind.METAL){--hp;}
         if(hp<=0){
             if(kind==BrickKind.POWERUP){
-                //spada powerup
+                if(powerups==null){
+                    System.out.println("powerup musi byc zainicjalizowany dla brickow powerup");
+                }
+                else{
+                    powerups.add(rect.getX()+BRICKSIZEWIDTH/2,rect.getY()+BRICKSIZEHEIGHT/2);
+                }
             }
             return score;
         }
