@@ -22,6 +22,7 @@ public class ALevel {
     protected Scene levelScene;
     protected BrickGrid grid;
     public void show(){
+        initALevel(window);//making lvl need to load again
         window.setScene(levelScene);
         window.setMinWidth(appWidth + 300);
         window.setMinHeight(appHeight + 100);
@@ -146,42 +147,38 @@ public class ALevel {
         levelScene.setOnKeyPressed(e->{
             switch (e.getCode()){
                 case A:
+                case LEFT:
                     game.setAction(UserAction.LEFT);
                     break;
                 case D:
+                case RIGHT:
                     game.setAction(UserAction.RIGHT);
                     break;
                 case ENTER:
-                    game.setAction(UserAction.ACCEPT);
-                    break;
-                case SPACE:
-                    game.setAction(UserAction.ACCEPT);
-                    break;
                 case P:
-                    game.setAction(UserAction.PAUSE);
+                    if(game.getAction2()!=UserAction.PAUSED) {
+                        game.setAction2(UserAction.PAUSE);
+                    }
                     break;
             }
         });
         levelScene.setOnKeyReleased(e->{
             switch (e.getCode()){
-                case A://TODO left arrow
+                case A:
+                case LEFT:
                     if(game.getAction()==UserAction.LEFT) {
                         game.setAction(UserAction.NONE);
                     }
                     break;
-                case D://TODO right arrow
+                case D:
+                case RIGHT:
                     if(game.getAction()==UserAction.RIGHT) {
                         game.setAction(UserAction.NONE);
                     }
                     break;
                 case ENTER:
-                    game.setAction(UserAction.NONE);
-                    break;
-                case SPACE:
-                    game.setAction(UserAction.NONE);
-                    break;
-                case P:
-                    game.setAction(UserAction.NONE);
+                case PAUSE:
+                    game.setAction2(UserAction.NONE);
                     break;
             }
         });

@@ -20,8 +20,8 @@ public class Main extends Application{
     @Override
     public void start(Stage window) throws Exception {
         window.setTitle("Arkanoidyszy");
-        //init leveli:
-        ALevel_1 level1 = new ALevel_1(window);//przy tworzeniu powinien byc init a getscene jak najmniej wykonywania
+        //init
+        ALevel_1 level1 = new ALevel_1(window);
         ALevel_2 level2 = new ALevel_2(window);
         //kolejne levele
 

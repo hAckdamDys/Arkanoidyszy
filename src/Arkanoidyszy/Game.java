@@ -19,12 +19,14 @@ import javafx.util.Duration;
  */
 public class Game {
 
+    public static final double tickTime=0.016;
     private static final int ballMax=9;
 
     private final double appWidth;
     private final double appHeight;
 
     private UserAction action;
+    private UserAction action2;
     private Timeline timeline;
     private boolean isPlaying;
 
@@ -48,6 +50,12 @@ public class Game {
     }
     public UserAction getAction() {
         return action;
+    }
+    public void setAction2(UserAction a){
+        action2=a;
+    }
+    public UserAction getAction2() {
+        return action2;
     }
 
     //private IntegerProperty intBallXProperty,intBallYProperty; to byly zmienne ktore trzmaly wspolrzedne pilki
@@ -85,14 +93,18 @@ public class Game {
     public Parent screen(){
         Pane layout = new Pane();
         //keyframe dziala tak ze co dany odstep czasu czyli np u mnie 0.016 sekund robi
-        KeyFrame frame = new KeyFrame(Duration.seconds(0.016), e -> {
+        KeyFrame frame = new KeyFrame(Duration.seconds(tickTime), e -> {
             //jesli isPlaying false to nic nie robimy
+            if( action2==UserAction.PAUSE){
+                isPlaying=!isPlaying;
+                action2=UserAction.PAUSED;
+            }
             if (!isPlaying) {
                 return;
             }
-            //akcja to to co wykonuje w tym momencie gracz czyli np poruszenie w lewo
+            //action what players do gets padle
             padle.move(action);
-            //poruszenie pilką i co zrobic gdy spadnie, dostaje tez akcje
+            //operating balls
             boolean allLost = true;
             for (Ball ball : balls) {
                 if (!ball.move(action)) {
@@ -103,10 +115,6 @@ public class Game {
                 this.loseLife();
             }
             powerups.fall();
-            //update info o pilce
-            /* albo tutaj mozna dac wypisywanie za kazdym razem albo lepiej podlaczyc sie do properties przy inicjalizacji
-            ballXLabel.setText(String.valueOf(ballA.getCircle().getTranslateX()));
-            */
 
         });
 
@@ -129,23 +137,16 @@ public class Game {
         return layout;
     }
 
-//    public void restartGame(){
-//        stopGame();
-//        startGame();
-//    }
-
-//    public void stopGame(){
-//        isPlaying=false;
-//        timeline.stop();
-//    }
 
     public void loseGame(){
+        powerups.clear();
         isPlaying=false;
         timeline.stop();
         GameOver.show(scoreLabel.getText());//mozna zmienic zeby wyswietlalo score
     }
 
     private void loseLife(){
+        powerups.clear();
         if(lifes<=0){
             this.loseGame();
             return;
