@@ -21,10 +21,9 @@ public class Powerup {
         this.circle.setFill(new ImagePattern(new Image("powerup_bigballs.png")));
     }
     public boolean fall(){
-        double cY = circle.getTranslateY();
+        double cY = circle.getCenterY();
         if(cY<appHeight){
-            circle.setTranslateY(cY+3);
-            System.out.println(cY);
+            circle.setCenterY(cY+3);
             return false;
         }
         return true;
