@@ -9,10 +9,11 @@ public class Brick {
     private Rectangle rect;
     private BrickKind kind;
     private int hp;
-    private final int hpStart;
+    private int hpStart;
     private int score;
     private Image myImage;
     private Powerups powerups;
+    private PowerupEffectKind effect;
 
     public BrickKind getKind() {
         return kind;
@@ -20,6 +21,10 @@ public class Brick {
 
     public void setPowerups(Powerups powerups) {
         this.powerups = powerups;
+    }
+
+    public void setEffect(PowerupEffectKind effect){
+        this.effect=effect;
     }
 
     public void restartBrick(){
@@ -30,22 +35,29 @@ public class Brick {
         else if(kind==BrickKind.METAL) {myImage = new Image("sadbrick.png"); rect.setFill(new ImagePattern(myImage));}
         else if(kind==BrickKind.POWERUP) {myImage = new Image("happybrick.png"); rect.setFill(new ImagePattern(myImage));}
     }
-    public Brick(BrickKind kind,int x,int y,int hp,int score){
+    private void init(BrickKind kind,int x,int y,int hp,int score){
         this.rect=new Rectangle(x,y,BRICKSIZEWIDTH,BRICKSIZEHEIGHT);
         hpStart=hp;
         this.score=score;
         this.kind=kind;
         restartBrick();
     }
+    public Brick(BrickKind kind,int x,int y,int hp,int score){
+        init(kind,x,y,hp,score);
+    }
+    public Brick(BrickKind kind,int x,int y,int hp,int score,PowerupEffectKind effect){
+        init(kind,x,y,hp,score);
+        setEffect(effect);
+    }
     public int takeHit(){
         if(kind!=BrickKind.METAL){--hp;}
         if(hp<=0){
             if(kind==BrickKind.POWERUP){
-                if(powerups==null){
+                if(powerups==null || effect==null){
                     System.out.println("powerup musi byc zainicjalizowany dla brickow powerup");
                 }
                 else{
-                    powerups.add(rect.getX()+BRICKSIZEWIDTH/2,rect.getY()+BRICKSIZEHEIGHT/2);
+                    powerups.add(rect.getX()+BRICKSIZEWIDTH/2,rect.getY()+BRICKSIZEHEIGHT/2,effect);
                 }
             }
             return score;

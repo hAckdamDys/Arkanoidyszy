@@ -10,6 +10,7 @@ import static java.lang.StrictMath.abs;
  * Created by Adm on 2017-02-27.
  */
 public class Powerup {
+    private final PowerupEffectKind effect;
     private Circle circle;
 //    private PowerupEffect effect; in constructor
     private Padle padle;
@@ -17,8 +18,9 @@ public class Powerup {
         return circle;
     }
 
-    public Powerup(double startX, double startY, Padle padle) {
+    public Powerup(double startX, double startY, Padle padle, PowerupEffectKind effect) {
         this.padle = padle;
+        this.effect = effect;
         this.circle = new Circle(startX,startY,30);
         this.circle.setFill(new ImagePattern(new Image("powerup_bigballs.png")));
     }
@@ -28,7 +30,7 @@ public class Powerup {
         if(cY<limit){
             circle.setCenterY(cY+3);
             if(cY>limit-circle.getRadius() && circle.getCenterX()>padle.getX()-circle.getRadius() && circle.getCenterX()<padle.getX()+padle.getWidth()+circle.getRadius()){
-                return PowerupEffectKind.BIGBALL;
+                return effect;
             }
             return PowerupEffectKind.NONE;
         }

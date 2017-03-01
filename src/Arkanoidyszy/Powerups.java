@@ -41,10 +41,10 @@ public class Powerups {
         }
     }
 
-    public void add(double x,double y){
+    public void add(double x, double y, PowerupEffectKind effect){
         for (int i = 0; i < powerUpBufforSize; i++) {
             if(powerupspots[i]){
-                powerup[i]=new Powerup(x,y,this.padle);
+                powerup[i]=new Powerup(x,y,this.padle,effect);
                 children.add(powerup[i].getCircle());
                 powerupspots[i]=false;
                 break;
@@ -67,6 +67,12 @@ public class Powerups {
                 switch (pEffect){
                     case BIGBALL:
                         effects[i]=new PowerupEffectBigBall(balls);
+                        break;
+                    case LONGPADLE:
+                        effects[i]=new PowerupEffectLongPadle(padle);
+                        break;
+                    case MULTIBALL:
+                        effects[i]=new PowerupEffectMultiball(balls);
                         break;
                 }
                 children.remove(powerup[i].getCircle());

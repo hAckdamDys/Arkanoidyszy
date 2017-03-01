@@ -21,7 +21,15 @@ public class Ball {
     private int waitinger;//ilsoc clocków po których znowu moze uderzyc klocek i sie odbic
     private boolean isAlive;
 
-    public void setSpeed(double dx,double dy){
+    public double getDx() {
+        return dx;
+    }
+
+    public double getDy() {
+        return dy;
+    }
+
+    public void setSpeed(double dx, double dy){
         this.dx=dx;
         this.dy=dy;
     }
@@ -36,8 +44,8 @@ public class Ball {
 
     public void setRadius(double radius) {
         this.circle.setRadius(radius);
-        double tmpX = circle.getTranslateX();
-        double tmpY = circle.getTranslateY();
+        double tmpX = circle.getCenterX();
+        double tmpY = circle.getCenterY();
         double dP = Math.PI/(2*(ileP-1));//o tyle bedziemy zwiekszac kąt ileP - 1 bo chcemy od -45 stopni do 45 włącznie
         double thetas[] = new double[4];
         thetas[0] = Math.PI*45/180;//poczatkowy kąt dla górnej części analogicznie dalej
@@ -57,6 +65,7 @@ public class Ball {
     }
 
     public Ball(double radius, Padle padle, int appWidth, int appHeight, BrickGrid grid){
+        isAlive=false;
         setPadle(padle);
         this.appHeight=appHeight;
         this.appWidth=appWidth;
@@ -69,8 +78,8 @@ public class Ball {
         this.grid=grid;
     }
     public void start(double tmpX, double tmpY){
-        circle.setTranslateX(tmpX);
-        circle.setTranslateY(tmpY);
+        circle.setCenterX(tmpX);
+        circle.setCenterY(tmpY);
         this.setRadius(this.circle.getRadius());
         circleUp=true; circleLeft=true;
         isAlive=true;
@@ -82,16 +91,16 @@ public class Ball {
         if(!isAlive){
             return true;
         }
-        double circlex=circle.getTranslateX();
-        double circley=circle.getTranslateY();
+        double circlex=circle.getCenterX();
+        double circley=circle.getCenterY();
         double radius = circle.getRadius();
 
         //jesli przesuwamy odpowiednio do predkosci dx i dy odpowiednie x i y
         //dx i dy musza byc dodatnie!!!!!!
         double rdx =(circleLeft ? -dx : dx);
         double rdy =(circleUp ? -dy : dy);
-        circle.setTranslateX(circlex + rdx);
-        circle.setTranslateY(circley + rdy);
+        circle.setCenterX(circlex + rdx);
+        circle.setCenterY(circley + rdy);
         for (int i = 0; i < ileP; i++) {
             for(int j=0;j<4;j++) {
                 allSides[j][i]=allSides[j][i].add(rdx,rdy);
@@ -223,13 +232,21 @@ public class Ball {
                     dx+=(ballPadleDiffer+ (Math.random() * 0.1*ballPadleDiffer));
                 }
             }
-            dx=Math.min(dx,12*(ballPadleDiffer+ (Math.random() * 0.1*ballPadleDiffer)));//max speed
+            dx=Math.min(dx,12*(ballPadleDiffer+ (Math.random() * 0.1*ballPadleDiffer)));//max speed)
+            if(dx<0){
+                circleLeft=!circleLeft;
+                dx=-dx;
+            }
+            if(dy<0){
+                circleUp=!circleUp;
+                dy=-dy;
+            }
         }
         //40 to jest odleglosc padla od ziemi stad 40 musi byc nizej
         if(circley + radius >= appHeight-40){
             isAlive=false;
-            this.circle.setTranslateX(-1);
-            this.circle.setTranslateY(-1);
+            this.circle.setCenterX(-1);
+            this.circle.setCenterY(-1);
             return true;
         }
         return false;

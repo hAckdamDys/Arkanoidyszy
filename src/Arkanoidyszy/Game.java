@@ -78,9 +78,9 @@ public class Game {
         //odpalenie listenerow na labele w mainie
         //zeby zoptymalizowac mozna zrobic double properites ktore sa zbindowane do tych od circla
         //intBallXProperty.bind(ballA.getCircle().translateXProperty());
-        balls[0].getCircle().translateXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
+        balls[0].getCircle().centerXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
         //intBallYProperty.bind(ballA.getCircle().translateYProperty());
-        balls[0].getCircle().translateYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
+        balls[0].getCircle().centerYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
         //powerups init:
         this.powerups=new Powerups(balls,padle);
         this.grid.setPowerups(powerups);
@@ -140,7 +140,6 @@ public class Game {
 
 
     public void loseGame(){
-        powerups.clear();
         isPlaying=false;
         timeline.stop();
         GameOver.show(scoreLabel.getText());//mozna zmienic zeby wyswietlalo score
