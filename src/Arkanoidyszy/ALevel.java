@@ -75,21 +75,21 @@ public class ALevel {
         padleStuffBall.setPadding(new Insets(10,10,10,10));
 
         //ustawienie predkosci:
-        Label padlePreSpeedLabel = new Label("Padle Speed: ");
-        Label padleSpeedLabel = new Label("5");
-        TextField padleSpeedField = new TextField();
-        padleSpeedField.setPromptText("ballRad");
-        padleSpeedField.setOnAction(e->{
-            String tmpStr = padleSpeedField.getText();
+        Label ballPreSpeedLabel = new Label("Ball Speed: ");
+        Label ballSpeedLabel = new Label("5");
+        TextField ballSpeedField = new TextField();
+        ballSpeedField.setPromptText("ballSpeed");
+        ballSpeedField.setOnAction(e->{
+            String tmpStr = ballSpeedField.getText();
             if(isGoodDouble(tmpStr)){
                 double tmpDouble = Double.parseDouble(tmpStr);
-                game.setPadleSpeed(tmpDouble);
-                padleSpeedLabel.setText(tmpStr);
+                game.setBallSpeed(tmpDouble);
+                ballSpeedLabel.setText(tmpStr);
             }
             gameScreen.requestFocus();
         });
 
-        VBox padleSpeed = new VBox(new HBox(padlePreSpeedLabel,padleSpeedLabel),padleSpeedField);
+        VBox padleSpeed = new VBox(new HBox(ballPreSpeedLabel,ballSpeedLabel),ballSpeedField);
         padleSpeed.setPadding(new Insets(10,10,10,10));
 
         //pokazanie wspolrzednych kulki

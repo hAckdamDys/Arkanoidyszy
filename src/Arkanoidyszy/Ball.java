@@ -21,6 +21,11 @@ public class Ball {
     private int waitinger;//ilsoc clocków po których znowu moze uderzyc klocek i sie odbic
     private boolean isAlive;
 
+    public void setSpeed(double dx,double dy){
+        this.dx=dx;
+        this.dy=dy;
+    }
+
     public boolean isAlive() {
         return isAlive;
     }

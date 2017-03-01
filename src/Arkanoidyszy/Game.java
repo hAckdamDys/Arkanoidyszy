@@ -92,9 +92,9 @@ public class Game {
     //tworzenie ekranu gry
     public Parent screen(){
         Pane layout = new Pane();
-        //keyframe dziala tak ze co dany odstep czasu czyli np u mnie 0.016 sekund robi
+        //keyframe is making game do sth every tickTime
         KeyFrame frame = new KeyFrame(Duration.seconds(tickTime), e -> {
-            //jesli isPlaying false to nic nie robimy
+            //handling pause
             if( action2==UserAction.PAUSE){
                 isPlaying=!isPlaying;
                 action2=UserAction.PAUSED;
@@ -114,18 +114,19 @@ public class Game {
             if (allLost) {
                 this.loseLife();
             }
+            //operating powerups
             powerups.fall();
-
         });
 
         //timeline:
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
+        //setting layout size
         layout.setMinHeight(appHeight);
         layout.setMinWidth(appWidth);
         layout.setMaxHeight(appHeight);
         layout.setMaxWidth(appWidth);
-        //dodajemy do layouta najpierw bloczki przez grid
+        //modificating layout bricks and other
         grid.showBricks(layout.getChildren(),scoreLabel);
         layout.getChildren().addAll(padle.getRect());
         for (Ball ball:balls) {
@@ -177,8 +178,10 @@ public class Game {
     public void setRectWidth(double width){
         padle.setRectWidth(width);
     }
-    public void setPadleSpeed(double padleSpeed) {
-        padle.setSpeed(padleSpeed);
+    public void setBallSpeed(double ballSpeed) {
+        for (Ball ball:balls) {
+            ball.setSpeed(ballSpeed,ballSpeed);
+        }
     }
 
 }
