@@ -56,6 +56,9 @@ public class BrickGrid {
             }
         }
         for (int i = 0; i < bricks.length; i++) {
+            if(bricks[i].getKind()==BrickKind.METAL){
+                bricksDestroyed+=1;
+            }
             this.addBrick(bricks[i],i);
         }
     }

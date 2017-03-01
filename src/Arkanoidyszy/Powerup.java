@@ -21,14 +21,14 @@ public class Powerup {
     public Powerup(double startX, double startY, Padle padle, PowerupEffectKind effect) {
         this.padle = padle;
         this.effect = effect;
-        this.circle = new Circle(startX,startY,30);
+        this.circle = new Circle(startX,startY,20);
         this.circle.setFill(new ImagePattern(new Image("powerup_bigballs.png")));
     }
     public PowerupEffectKind fall(){
         double cY = circle.getCenterY();
         double limit=padle.getAppHeight()-padle.getHeight();
         if(cY<limit){
-            circle.setCenterY(cY+3);
+            circle.setCenterY(cY+2);
             if(cY>limit-circle.getRadius() && circle.getCenterX()>padle.getX()-circle.getRadius() && circle.getCenterX()<padle.getX()+padle.getWidth()+circle.getRadius()){
                 return effect;
             }

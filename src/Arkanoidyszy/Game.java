@@ -150,6 +150,7 @@ public class Game {
     }
 
     private void loseLife(){
+        isPlaying=false;
         powerups.clear();
         if(lifes<=0){
             this.loseGame();

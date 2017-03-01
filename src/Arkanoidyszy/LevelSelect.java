@@ -14,7 +14,7 @@ public class LevelSelect {
     private static int levelSelectHeight;
     private static Scene levelSelectScene;
     private static boolean initDone=false;
-    public static void initLevelSelectScreen(Scene menu, Stage window, int menuHeight, int menuWidth, int levelSelectHeight, int levelSelectWidth, ALevel_1 level_1,ALevel_2 level_2){
+    public static void initLevelSelectScreen(Scene menu, Stage window, int menuHeight, int menuWidth, int levelSelectHeight, int levelSelectWidth, ALevel_1 level_1,ALevel_2 level_2,ALevel_3 level_3,ALevel_4 level_4){
         LevelSelect.window=window;
         LevelSelect.levelSelectWidth=levelSelectWidth;
         LevelSelect.levelSelectHeight=levelSelectHeight;
@@ -45,8 +45,20 @@ public class LevelSelect {
             level_2.show();
         });
         l2Button.getStyleClass().add("levelSelectButtons");
+        Button l3Button = new Button("Level 3");
+        l3Button.setOnAction(e->{
+            //jesli bedzie progress to option box wyskakuje czy resetowac save
+            level_3.show();
+        });
+        l3Button.getStyleClass().add("levelSelectButtons");
+        Button l4Button = new Button("Level 4");
+        l4Button.setOnAction(e->{
+            //jesli bedzie progress to option box wyskakuje czy resetowac save
+            level_4.show();
+        });
+        l4Button.getStyleClass().add("levelSelectButtons");
         //dodanie layoutu
-        VBox layout = new VBox(levelSelectLabel,l1Button,l2Button,closeButton);
+        VBox layout = new VBox(levelSelectLabel,l1Button,l2Button,l3Button,l4Button,closeButton);
         layout.getStyleClass().add("levelSelectBackground");
         layout.setAlignment(Pos.TOP_CENTER);
         layout.setSpacing(20);//odstepy miedzy buttonami

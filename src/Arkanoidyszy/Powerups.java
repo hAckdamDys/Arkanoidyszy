@@ -7,7 +7,7 @@ import javafx.scene.Node;
  * Created by Adm on 2017-02-27.
  */
 public class Powerups {
-    private static final int powerUpBufforSize=30;
+    private static final int powerUpBufforSize=60;
 
     private Ball[] balls;
     private Padle padle;

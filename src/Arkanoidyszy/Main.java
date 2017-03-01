@@ -21,7 +21,8 @@ public class Main extends Application{
     public void start(Stage window) throws Exception {
         window.setTitle("Arkanoidyszy");
         //init
-        ALevel_3 level3 = new ALevel_3(window,null);
+        ALevel_4 level4 = new ALevel_4(window,null);
+        ALevel_3 level3 = new ALevel_3(window,level4);
         ALevel_2 level2 = new ALevel_2(window,level3);
         ALevel_1 level1 = new ALevel_1(window,level2);
 
@@ -52,7 +53,7 @@ public class Main extends Application{
         //ustawienie menu jako okienka ktore teraz jest pokazane
         //init gameovera i level selecta:
         GameOver.initGameOverScreen(menu,window,menuHeight,menuWidth,menuHeight,menuWidth);
-        LevelSelect.initLevelSelectScreen(menu,window,menuHeight,menuWidth,menuHeight,menuWidth,level1,level2);
+        LevelSelect.initLevelSelectScreen(menu,window,menuHeight,menuWidth,menuHeight,menuWidth,level1,level2,level3,level4);
         //pokazanie menu:
         window.setScene(menu);
         window.setMinHeight(menuHeight);
