@@ -41,7 +41,7 @@ public class ALevel_4 extends ALevel{
         }
         Collections.shuffle(list);
         for (int i = 0; i < 49; i++) {
-            bricks[i] = new Brick(list2.get((int)(Math.random()*2)), (int)(Brick.BRICKSIZEWIDTH)*(int)(list.get(i)/6),(int)(Brick.BRICKSIZEHEIGHT)*(int)(list.get(i)%10),(int)(Math.random()*7),500, PowerupEffectKind.values()[new Random().nextInt(PowerupEffectKind.values().length)]);
+            bricks[i] = new Brick(list2.get((int)(Math.random()*2)), Brick.BRICKSIZEWIDTH * list.get(i)/6, Brick.BRICKSIZEHEIGHT * list.get(i)%10,(int)(Math.random()*7),500, PowerupEffectKind.values()[new Random().nextInt(PowerupEffectKind.values().length)]);
         }
         grid = new BrickGrid(appWidth,appHeight,bricks);
     }

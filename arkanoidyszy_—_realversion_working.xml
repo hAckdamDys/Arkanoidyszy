@@ -111,5 +111,31 @@
   
   <target name="build.modules" depends="init, clean, compile.module.arkanoidyszy" description="build all modules"/>
   
-  <target name="all" depends="build.modules" description="build all"/>
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.arkanoidyszy:jar" value="${basedir}/out/artifacts/Arkanoidyszy_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.Arkanoidyszy.jar" value="${artifacts.temp.dir}/Arkanoidyszy.jar"/>
+  </target>
+  
+  <target name="artifact.arkanoidyszy:jar" depends="init.artifacts, compile.module.arkanoidyszy" description="Build &#39;Arkanoidyszy:jar&#39; artifact">
+    <property name="artifact.temp.output.arkanoidyszy:jar" value="${artifacts.temp.dir}/Arkanoidyszy_jar"/>
+    <mkdir dir="${artifact.temp.output.arkanoidyszy:jar}"/>
+    <jar destfile="${temp.jar.path.Arkanoidyszy.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${arkanoidyszy.output.dir}"/>
+    </jar>
+    <copy file="${temp.jar.path.Arkanoidyszy.jar}" tofile="${artifact.temp.output.arkanoidyszy:jar}/Arkanoidyszy.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.arkanoidyszy:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.arkanoidyszy:jar}"/>
+    <copy todir="${artifact.output.arkanoidyszy:jar}">
+      <fileset dir="${artifact.temp.output.arkanoidyszy:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>

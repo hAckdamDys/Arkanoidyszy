@@ -72,10 +72,7 @@ public class BrickGrid {
         }
     }
     public boolean checkBrick(int x,int y){
-        if(theGrid[x][y]==-1){
-            return false;
-        }
-        return true;
+        return theGrid[x][y] != -1;
     }
     public void takeHit(int x,int y){
         int brickId = theGrid[x][y];
