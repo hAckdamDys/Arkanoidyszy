@@ -14,14 +14,18 @@ public class BrickGrid {
     private int[][] theGrid;
     private int score;
     private int appHeight,appWidth;
+    private int bricksDestroyed;
     Label scoreLabel;
     ObservableList<Node> brickField;
+    public boolean checkWin(){
+        return bricksDestroyed == bricks.length;
+    }
     public void restart(){
         score=0;
         scoreLabel.setText("0");
         for (int i = 0; i < appWidth; i++) {
             for (int j = 0; j <appHeight ; j++) {
-                theGrid[i][j]=-1;//pole bez bricka
+                theGrid[i][j]=-1;//no brick on gamescreen here
             }
         }
         for (int i = 0; i < bricks.length; i++) {
@@ -45,6 +49,7 @@ public class BrickGrid {
         this.appWidth = appWidth;
         this.appHeight = appHeight;
         this.bricks=bricks;
+        this.bricksDestroyed=0;
         for (int i = 0; i < appWidth; i++) {
             for (int j = 0; j <appHeight ; j++) {
                 theGrid[i][j]=-1;//pole bez bricka
@@ -84,6 +89,7 @@ public class BrickGrid {
             score+=hitScore;
             scoreLabel.setText(String.valueOf(score));
             brickField.remove(bricks[brickId].getRect());
+            bricksDestroyed+=1;
         }
     }
     public void setPowerups(Powerups powerups){

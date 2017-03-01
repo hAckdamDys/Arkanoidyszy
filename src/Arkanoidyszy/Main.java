@@ -21,8 +21,10 @@ public class Main extends Application{
     public void start(Stage window) throws Exception {
         window.setTitle("Arkanoidyszy");
         //init
-        ALevel_1 level1 = new ALevel_1(window);
-        ALevel_2 level2 = new ALevel_2(window);
+        ALevel_3 level3 = new ALevel_3(window,null);
+        ALevel_2 level2 = new ALevel_2(window,level3);
+        ALevel_1 level1 = new ALevel_1(window,level2);
+
         //kolejne levele
 
         //układ menu:

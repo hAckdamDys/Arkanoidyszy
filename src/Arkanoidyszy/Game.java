@@ -11,11 +11,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
- * Ta klasa zawiera w sobie elementy grywalne danego poziomu
- * posiada padle, pilke, uklad poziomu, score
- * kontroluje ilosc zyc jesli sie skoncza to wywala gameover i zwraca gdzies score
- * decyduje o wykonywanych akcjach zaleznie od action wyslanego przez level
- *
+ * This class have elements of a level
+ * it controls how things flow with keyframeso that everything is synced
  */
 public class Game {
 
@@ -24,6 +21,7 @@ public class Game {
 
     private final double appWidth;
     private final double appHeight;
+    private final ALevel nextLevel;
 
     private UserAction action;
     private UserAction action2;
@@ -58,10 +56,9 @@ public class Game {
         return action2;
     }
 
-    //private IntegerProperty intBallXProperty,intBallYProperty; to byly zmienne ktore trzmaly wspolrzedne pilki
-
-    public Game(int appWidth, int appHeight, double ballRadius, double RectHeight, double RectWidth, BrickGrid grid) {
+    public Game(int appWidth, int appHeight, double ballRadius, double RectHeight, double RectWidth, BrickGrid grid, ALevel nextLevel) {
         //inicjalizacja danych
+        this.nextLevel=nextLevel;
         this.grid = grid;
         this.appWidth = appWidth;
         this.appHeight = appHeight;
@@ -72,14 +69,7 @@ public class Game {
         for (int i = 0; i < ballMax; i++) {
             balls[i] = new Ball(ballRadius,this.padle,appWidth,appHeight,grid);
         }
-        //property na wspolrzedne pilki
-        //intBallXProperty = new SimpleIntegerProperty();
-        //intBallYProperty = new SimpleIntegerProperty();
-        //odpalenie listenerow na labele w mainie
-        //zeby zoptymalizowac mozna zrobic double properites ktore sa zbindowane do tych od circla
-        //intBallXProperty.bind(ballA.getCircle().translateXProperty());
         balls[0].getCircle().centerXProperty().addListener((v,oldV,newV) -> ballXLabel.setText(String.valueOf(newV.intValue())));
-        //intBallYProperty.bind(ballA.getCircle().translateYProperty());
         balls[0].getCircle().centerYProperty().addListener((v,oldV,newV) -> ballYLabel.setText(String.valueOf(newV.intValue())));
         //powerups init:
         this.powerups=new Powerups(balls,padle);
@@ -89,7 +79,7 @@ public class Game {
         timeline=new Timeline();
         action=UserAction.NONE;
     }
-    //tworzenie ekranu gry
+    //making game screen
     public Parent screen(){
         Pane layout = new Pane();
         //keyframe is making game do sth every tickTime
@@ -101,6 +91,10 @@ public class Game {
             }
             if (!isPlaying) {
                 return;
+            }
+            //when player win
+            if(grid.checkWin()){
+                winGame();
             }
             //action what players do gets padle
             padle.move(action);
@@ -133,16 +127,26 @@ public class Game {
             layout.getChildren().add(ball.getCircle());
         }
         powerups.addChildren(layout.getChildren());
-        layout.setOnMouseClicked(e->layout.requestFocus());//sprawdzamy
+        layout.setOnMouseClicked(e->layout.requestFocus());//focus on window
         layout.getStyleClass().add("gameBackground");
         return layout;
     }
 
+    public void winGame(){
+        isPlaying=false;
+        timeline.stop();
+        //update score to high score
+        if(nextLevel==null){
+            GameOver.show(scoreLabel.getText());
+            return;
+        }
+        nextLevel.show();
+    }
 
     public void loseGame(){
         isPlaying=false;
         timeline.stop();
-        GameOver.show(scoreLabel.getText());//mozna zmienic zeby wyswietlalo score
+        GameOver.show(scoreLabel.getText());//screen showing score
     }
 
     private void loseLife(){
@@ -158,15 +162,14 @@ public class Game {
         padle.start();
     }
 
-    //poczatek gry swiezy
+    //fresh game start
     public void startGame(){
-        //ustawienie ball i Rect na default
         lifes=3;
         balls[0].start(appWidth/2,appHeight-75);
         padle.start();
         grid.restart();
         timeline.play();
-        isPlaying=true;
+        isPlaying=false;
     }
 
     public void setBallRadius(double radius){

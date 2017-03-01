@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class ALevel {
+public class ALevel {//this class needs refactoring...
     protected int appWidth=800, appHeight=600;
     protected double ballRadius=10,batHeight=60,batWidth=100;
     protected Game game;
@@ -21,8 +21,12 @@ public class ALevel {
     protected Stage window;
     protected Scene levelScene;
     protected BrickGrid grid;
+    private ALevel nextLevel;
+    public ALevel(Stage window,ALevel nextLevel){
+        initALevel(window,nextLevel);
+    }
     public void show(){
-        initALevel(window);//making lvl need to load again
+        initALevel(window,nextLevel);//making lvl need to load again
         window.setScene(levelScene);
         window.setMinWidth(appWidth + 300);
         window.setMinHeight(appHeight + 100);
@@ -133,10 +137,11 @@ public class ALevel {
     }
     protected void makeGrid(){}
 
-    protected void initALevel(Stage window){
+    protected void initALevel(Stage window, ALevel nextLevel){
         this.window = window;
+        this.nextLevel=nextLevel;
         makeGrid();
-        this.game = new Game(appWidth,appHeight,ballRadius,batHeight,batWidth,grid);
+        this.game = new Game(appWidth,appHeight,ballRadius,batHeight,batWidth,grid,nextLevel);
         initSides();
         //srodek czyli gra:
         display.setCenter(gameScreen);

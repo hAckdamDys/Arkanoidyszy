@@ -4,6 +4,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class ALevel_2 extends ALevel{
+    public ALevel_2(Stage window, ALevel nextLevel) {
+        super(window, nextLevel);
+    }
+
     @Override
     protected void makeGrid(){
         Brick[] bricks = new Brick[30];
@@ -18,8 +22,5 @@ public class ALevel_2 extends ALevel{
             bricks[25+i] = new Brick(BrickKind.POWERUP,440+i*Brick.BRICKSIZEWIDTH,60+2*Brick.BRICKSIZEHEIGHT,1,100,PowerupEffectKind.LONGPADLE);
         }
         grid = new BrickGrid(appWidth,appHeight,bricks);
-    }
-    public ALevel_2(Stage window){
-        initALevel(window);
     }
 }

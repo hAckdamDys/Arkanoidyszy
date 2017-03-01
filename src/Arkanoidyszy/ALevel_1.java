@@ -13,6 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ALevel_1 extends ALevel{
+    public ALevel_1(Stage window, ALevel nextLevel) {
+        super(window, nextLevel);
+    }
+
     @Override
     protected void makeGrid(){
         Brick[] bricks = new Brick[30];
@@ -22,8 +26,5 @@ public class ALevel_1 extends ALevel{
             bricks[20+i] = new Brick(BrickKind.BASIC,40+i*Brick.BRICKSIZEWIDTH,30+2*Brick.BRICKSIZEHEIGHT,1,100);
         }
         grid = new BrickGrid(appWidth,appHeight,bricks);
-    }
-    public ALevel_1(Stage window){
-        initALevel(window);
     }
 }
